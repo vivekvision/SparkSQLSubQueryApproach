@@ -1,0 +1,73 @@
+with Group1_Enrich as (
+select 
+  PersonID, 
+  float(Height_CM) as Height, 
+  date(DOB) as BirthDate
+from group_1_txt
+),
+Group2_Enrich as (
+select 
+  PersonID, 
+  float(Height_CM) as Height, 
+  date(DOB) as BirthDate
+from group_2_txt
+),
+
+Group1_Min_BirthDate as (
+select 
+    min(BirthDate) as Birth_Date,
+    'Group1' as GroupName,
+    first(PersonID) as PersonID,
+    first(Height) as Height,
+    'Eldest' as Remarks
+from Group1_Enrich
+),
+Group1_Max_Height as (
+select 
+  first(BirthDate) as Birth_Date,
+  'Group1' as GroupName,
+  first(PersonID) as PersonID,
+  max(Height) as Height,
+  'Tallest' as Remarks
+from Group1_Enrich
+),
+Group2_Min_BirthDate as (
+select 
+   min(BirthDate) as Birth_Date,
+   'Group2' as GroupName,
+   first(PersonID) as PersonID,
+   first(Height) as Height,
+   'Eldest' as Remarks
+ from Group2_Enrich
+),
+Group2_Max_Height as (
+select 
+  first(BirthDate) as Birth_Date,
+  'Group2' as GroupName,
+  first(PersonID) as PersonID,
+  max(Height) as Height,
+  'Tallest' as Remarks
+  from Group2_Enrich
+)
+
+---- Return the final result 
+select 
+*
+from 
+ Group1_Min_BirthDate
+union all
+select 
+*
+from 
+  Group1_Max_Height
+union all
+select 
+*
+from 
+  Group2_Min_BirthDate
+union all
+select 
+*
+from   
+  Group2_Max_Height
+
